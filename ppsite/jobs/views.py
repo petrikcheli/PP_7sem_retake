@@ -24,7 +24,7 @@ def post_detail(request, id):
         post = Post.published.get(id=id)
 
     except Post.DoesNotExist:
-        raise Http404("No Post found.")
+        raise Http404("No Post found. ioiooioi")
     
     return render(request,
                 'jobs/post/detail.html',
