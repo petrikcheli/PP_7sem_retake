@@ -19,6 +19,8 @@ from django.urls import path, include
 from django.conf.urls import handler400, handler403, handler404, handler500
 from django.shortcuts import render
 import traceback
+from django.conf import settings
+from django.conf.urls.static import static
 
 def custom_400_view(request, exception):
     return render(request, "400.html", {"error_trace": exception}, status=400)
@@ -45,4 +47,4 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('jobs/', include('jobs.urls', namespace='jobs')),
     path('account/', include('account.urls')),
-]
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

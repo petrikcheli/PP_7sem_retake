@@ -2,7 +2,7 @@
 
 {% block content %}
   <h2>Список вакансий</h2>
-  <ul>
+  <ul class="job-list">
     {% for job in jobs %}
       <li>
         <h3><a href="{% url 'job_detail' job.id %}">{{ job.title }}</a></h3> — {{ job.employer.username }}

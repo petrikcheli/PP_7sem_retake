@@ -8,7 +8,7 @@
             <p><strong>Вакансия:</strong> {{ response.job.title }}</p>
             <p><strong>Студент:</strong> {{ response.student.username }}</p>
             <p><strong>Дата отклика:</strong> {{ response.created_at }}</p>
-            <a href="{{ response.resume.url }}" download>Скачать резюме</a>
+            <a href="static/{{ response.resume.url }}" download>Скачать резюме</a>
             <a href="{% url 'update_response_status' response.id %}">Изменить статус</a>
         </li>
     {% empty %}

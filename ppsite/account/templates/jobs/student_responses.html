@@ -12,11 +12,11 @@
                 <td>{{ response.job.title }}</td>
                 <td>
                     {% if response.status == "pending" %}
-                        ⏳ В ожидании
+                        В ожидании
                     {% elif response.status == "accepted" %}
-                        ✅ Принято
+                        Принято
                     {% elif response.status == "rejected" %}
-                        ❌ Отклонено
+                        Отклонено
                     {% endif %}
                 </td>
             </tr>

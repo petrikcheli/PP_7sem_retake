@@ -1,6 +1,8 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
 from . import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 from django.conf.urls import handler400, handler403, handler404, handler500
 from django.shortcuts import render
@@ -63,5 +65,5 @@ urlpatterns = [
     path('employer/responses/', views.employer_responses, name='employer_responses'),
     path('responses/', views.student_responses, name='student_responses'),
     path('response/<int:response_id>/update/', views.update_response_status, name='update_response_status'),
-    path('job/<int:pk>/', views.job_detail, name='job_details'),
-]
+    path('job/<int:pk>/', views.job_detail, name='job_detail'),
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

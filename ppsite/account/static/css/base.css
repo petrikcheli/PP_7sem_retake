@@ -275,3 +275,57 @@ img.user-detail {
     font-style:italic;
     color:#ccc;
 }
+
+.job-list ul {
+    list-style: none;
+    padding: 0;
+}
+
+.job-list li {
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+    border-left: 5px solid #007bff;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.job-list li:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.job-list h3 {
+    margin: 0;
+    font-size: 20px;
+    color: #007bff;
+}
+
+.job-list h3 a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.job-list p {
+    margin: 10px 0;
+    color: #555;
+}
+
+.job-list strong {
+    color: #333;
+}
+
+.job-list a {
+    display: inline-block;
+    padding: 8px 12px;
+    color: #000000;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background 0.2s ease-in-out;
+}
+
+.job-list a:hover {
+    background: #0056b3;
+}

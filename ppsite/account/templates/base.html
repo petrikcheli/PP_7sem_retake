@@ -3,11 +3,11 @@
 <html>
 <head>
     <title>{% block title %}{% endblock %}</title>
-    <link href="{% static "css/base.css" %}" rel="stylesheet">
+    <link href="{% static 'css/base.css' %}" rel="stylesheet">
 </head>
 <body>
     <div id="header">
-        <span class="logo">Bookmarks</span>
+        <span class="logo">УрФУ вакансии</span>
         {% if request.user.is_authenticated %}
             <ul class="menu">
                     <li {% if section == "dashboard" %}class="selected"{% endif %}>
@@ -45,9 +45,9 @@
         <span class="user">
             {% if request.user.is_authenticated %}
                 Hello {{ request.user.first_name|default:request.user.username }},
-                <a href="{% url "logout" %}">Logout</a>
+                <a href="{% url "logout" %}">Выйти</a>
             {% else %}
-                <a href="{% url "login" %}">Log-in</a>
+                <a href="{% url "login" %}">Войти</a>
             {% endif %}
         </span> 
     </div>
