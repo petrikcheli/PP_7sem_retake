@@ -19,6 +19,13 @@
                     <li {% if section == "people" %}class="selected"{% endif %}>
                         <a href="#">People</a>
                     </li>
+                    {% if user.is_authenticated and user.profile.role == "employer" %}
+                        <li{% if section == "create vacancies" %}class="selected"{% endif %}>
+                             <a href="{% url 'create_job' %}">Создать вакансию</a>
+                        </li>
+                       
+                    {% endif %}
+
                 </ul>
         {% endif %}
         <span class="user">

@@ -1,11 +1,18 @@
 from django import forms
 from django.contrib.auth.models import User
+from .models import Job
 
 class LoginForm(forms.Form):
     username = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput)
 
 class UserRegistrationForm(forms.ModelForm):
+    ROLE_CHOICES = [
+        ('student', 'Student'),
+        ('employer', 'Employer'),
+    ]
+
+    role = forms.ChoiceField(choices=ROLE_CHOICES, label='Who are you?')
     password = forms.CharField(label='Password',
                                 widget=forms.PasswordInput)
     password2 = forms.CharField(label='Repeat password',
@@ -18,3 +25,8 @@ class UserRegistrationForm(forms.ModelForm):
         if cd['password'] != cd['password2']:
             raise forms.ValidationError('Passwords don\'t match.')
         return cd['password2']
+    
+class JobForm(forms.ModelForm):
+    class Meta:
+        model = Job
+        fields = ['title', 'description', 'salary']
