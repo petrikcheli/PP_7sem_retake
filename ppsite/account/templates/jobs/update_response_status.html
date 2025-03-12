@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Изменить статус отклика</h2>
+    <p>Студент: {{ response.student.username }}</p>
+    <p>Вакансия: {{ response.job.title }}</p>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Обновить</button>
+    </form>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends "jobs/base.html" %}
+
+{% block title %}{{ jobs.title }}{% endblock %}
+
+{% block content %}
+    <h1>{{ jobs.title }}</h1>
+    <p class="date">
+        Published {{ post.publish }} by {{ post.author }}
+    </p>
+    {{ post.body|linebreaks }}
+{% endblock %}

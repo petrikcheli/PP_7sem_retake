@@ -5,7 +5,7 @@
   <ul>
     {% for job in jobs %}
       <li>
-        <strong>{{ job.title }}</strong> — {{ job.employer.username }}
+        <h3><a href="{% url 'job_detail' job.id %}">{{ job.title }}</a></h3> — {{ job.employer.username }}
         <p>{{ job.description }}</p>
         <p><strong>Дата публикации:</strong> {{ job.created_at }}</p>
         {% if user.is_authenticated and user != job.employer %}

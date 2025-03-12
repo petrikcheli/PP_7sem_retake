@@ -6,6 +6,8 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from .models import Profile, Job, Response
 from django.contrib.postgres.search import SearchVector
 from .forms import JobForm, SearchForm, ResponseForm, ResponseStatusForm
+from django.http import HttpResponseNotFound, HttpResponseBadRequest, HttpResponseServerError
+from django.core.exceptions import ValidationError
 
 
 def user_login(request):
@@ -91,10 +93,10 @@ def post_search(request):
         form = SearchForm(request.GET)
     if form.is_valid():
         query = form.cleaned_data['query']
-        results = Post.published.annotate(
-            search=SearchVector('title', 'body'),
+        results = Job.objects.annotate(
+            search=SearchVector('title', 'description'),
         ).filter(search=query)
-    return render(request, 'jobs/post/search.html', {'form': form,
+    return render(request, 'jobs/search.html', {'form': form,
                                                      'query': query,
                                                      'results': results})
 
@@ -114,7 +116,7 @@ def edit_job(request, job_id):
         form = JobForm(request.POST, instance=job)
         if form.is_valid():
             form.save()
-            return redirect('my_jobs')  # Возвращаем работодателя к списку его вакансий
+            return redirect('job_list')  # Возвращаем работодателя к списку его вакансий
     else:
         form = JobForm(instance=job)
 
@@ -126,7 +128,7 @@ def delete_job(request, job_id):
 
     if request.method == "POST":
         job.delete()
-        return redirect('my_jobs')
+        return redirect('job_list')
 
     return render(request, 'jobs/delete_job.html', {'job': job})
 
@@ -136,10 +138,10 @@ def apply_for_job(request, job_id):
     job = get_object_or_404(Job, id=job_id)
 
     if request.user == job.employer:
-        return redirect('all_jobs')  # Работодатель не может откликаться
+        return redirect('job_list')  # Работодатель не может откликаться
 
     if Response.objects.filter(student=request.user, job=job).exists():
-        return redirect('all_jobs')  # Уже откликался
+        return redirect('job_list')  # Уже откликался
 
     if request.method == 'POST':
         form = ResponseForm(request.POST, request.FILES)
@@ -164,7 +166,7 @@ def employer_responses(request):
 @login_required
 def student_responses(request):
     responses = Response.objects.filter(student=request.user)
-    return render(request, 'account/student_responses.html', {'responses': responses})
+    return render(request, 'jobs/student_responses.html', {'responses': responses})
 
 @login_required
 def update_response_status(request, response_id):
@@ -182,4 +184,13 @@ def update_response_status(request, response_id):
     else:
         form = ResponseStatusForm(instance=response)
 
-    return render(request, 'account/update_response_status.html', {'form': form, 'response': response})
+    return render(request, 'jobs/update_response_status.html', {'form': form, 'response': response})
+
+
+from django.shortcuts import render, get_object_or_404
+from .models import Job
+
+def job_detail(request, pk):
+    job = get_object_or_404(Job, pk=pk)
+    return render(request, 'jobs/job_detail.html', {'job': job})
+
