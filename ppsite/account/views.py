@@ -1,10 +1,11 @@
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth import authenticate, login
 from .forms import LoginForm, UserRegistrationForm
 from django.contrib.auth.decorators import login_required, user_passes_test
-from .models import Profile, Job
-from .forms import JobForm
+from .models import Profile, Job, Response
+from django.contrib.postgres.search import SearchVector
+from .forms import JobForm, SearchForm, ResponseForm, ResponseStatusForm
 
 
 def user_login(request):
@@ -80,3 +81,105 @@ def create_job(request):
 def job_list(request):
     jobs = Job.objects.all()
     return render(request, 'jobs/list.html', {'jobs': jobs})
+
+
+def post_search(request):
+    form = SearchForm()
+    query = None
+    results = []
+    if 'query' in request.GET:
+        form = SearchForm(request.GET)
+    if form.is_valid():
+        query = form.cleaned_data['query']
+        results = Post.published.annotate(
+            search=SearchVector('title', 'body'),
+        ).filter(search=query)
+    return render(request, 'jobs/post/search.html', {'form': form,
+                                                     'query': query,
+                                                     'results': results})
+
+@login_required
+def my_jobs(request):
+    if request.user.profile.role != 'employer':  # Проверяем, что это работодатель
+        return render(request, 'error.html', {'message': 'У вас нет доступа к этой странице'})
+    
+    jobs = Job.objects.filter(employer=request.user)  # Получаем только его вакансии
+    return render(request, 'jobs/my_jobs.html', {'jobs': jobs})
+
+@login_required
+def edit_job(request, job_id):
+    job = get_object_or_404(Job, id=job_id, employer=request.user)  # Проверяем владельца
+
+    if request.method == "POST":
+        form = JobForm(request.POST, instance=job)
+        if form.is_valid():
+            form.save()
+            return redirect('my_jobs')  # Возвращаем работодателя к списку его вакансий
+    else:
+        form = JobForm(instance=job)
+
+    return render(request, 'jobs/edit_job.html', {'form': form})
+
+@login_required
+def delete_job(request, job_id):
+    job = get_object_or_404(Job, id=job_id, employer=request.user)  # Проверяем владельца
+
+    if request.method == "POST":
+        job.delete()
+        return redirect('my_jobs')
+
+    return render(request, 'jobs/delete_job.html', {'job': job})
+
+
+@login_required
+def apply_for_job(request, job_id):
+    job = get_object_or_404(Job, id=job_id)
+
+    if request.user == job.employer:
+        return redirect('all_jobs')  # Работодатель не может откликаться
+
+    if Response.objects.filter(student=request.user, job=job).exists():
+        return redirect('all_jobs')  # Уже откликался
+
+    if request.method == 'POST':
+        form = ResponseForm(request.POST, request.FILES)
+        if form.is_valid():
+            response = form.save(commit=False)
+            response.student = request.user
+            response.job = job
+            response.save()
+            return redirect('job_list')  # После отклика перенаправляем на список вакансий
+    else:
+        form = ResponseForm()
+
+    return render(request, 'jobs/apply.html', {'form': form, 'job': job})
+
+@login_required
+def employer_responses(request):
+    jobs = Job.objects.filter(employer=request.user)
+    responses = Response.objects.filter(job__in=jobs)
+
+    return render(request, 'jobs/employer_responses.html', {'responses': responses})
+
+@login_required
+def student_responses(request):
+    responses = Response.objects.filter(student=request.user)
+    return render(request, 'account/student_responses.html', {'responses': responses})
+
+@login_required
+def update_response_status(request, response_id):
+    response = get_object_or_404(Response, id=response_id)
+
+    # Проверяем, что работодатель изменяет только свои вакансии
+    if response.job.employer != request.user:
+        return redirect('job_list')
+
+    if request.method == "POST":
+        form = ResponseStatusForm(request.POST, instance=response)
+        if form.is_valid():
+            form.save()
+            return redirect('employer_responses')
+    else:
+        form = ResponseStatusForm(instance=response)
+
+    return render(request, 'account/update_response_status.html', {'form': form, 'response': response})

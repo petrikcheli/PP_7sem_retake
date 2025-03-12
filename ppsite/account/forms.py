@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import Job
+from .models import Job, Response
 
 class LoginForm(forms.Form):
     username = forms.CharField()
@@ -30,3 +30,17 @@ class JobForm(forms.ModelForm):
     class Meta:
         model = Job
         fields = ['title', 'description', 'salary']
+
+
+class SearchForm(forms.Form):
+    query = forms.CharField()
+
+class ResponseForm(forms.ModelForm):
+    class Meta:
+        model = Response
+        fields = ['resume']
+
+class ResponseStatusForm(forms.ModelForm):
+    class Meta:
+        model = Response
+        fields = ['status']

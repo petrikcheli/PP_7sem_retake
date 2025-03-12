@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Мои отклики</h2>
+    <table border="1">
+        <tr>
+            <th>Вакансия</th>
+            <th>Статус</th>
+        </tr>
+        {% for response in responses %}
+            <tr>
+                <td>{{ response.job.title }}</td>
+                <td>
+                    {% if response.status == "pending" %}
+                        ⏳ В ожидании
+                    {% elif response.status == "accepted" %}
+                        ✅ Принято
+                    {% elif response.status == "rejected" %}
+                        ❌ Отклонено
+                    {% endif %}
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="2">Вы пока не откликались на вакансии.</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

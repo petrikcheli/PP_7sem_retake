@@ -7,6 +7,10 @@
       <li>
         <strong>{{ job.title }}</strong> — {{ job.employer.username }}
         <p>{{ job.description }}</p>
+        <p><strong>Дата публикации:</strong> {{ job.created_at }}</p>
+        {% if user.is_authenticated and user != job.employer %}
+            <a href="{% url 'apply_for_job' job.id %}">Откликнуться</a>
+        {% endif %}
       </li>
     {% endfor %}
   </ul>

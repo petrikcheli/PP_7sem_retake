@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Отклик на вакансию "{{ job.title }}"</h2>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Отправить резюме</button>
+    <a href="{% url 'job_list' %}">Отмена</a>
+</form>
+{% endblock %}

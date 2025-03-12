@@ -22,3 +22,19 @@ class Job(models.Model):
 
     def __str__(self):
         return self.title
+    
+class Response(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'В ожидании'),
+        ('accepted', 'Принято'),
+        ('rejected', 'Отклонено')
+    ]
+        
+    student = models.ForeignKey(User, on_delete=models.CASCADE, related_name="responses")
+    job = models.ForeignKey(Job, on_delete=models.CASCADE, related_name="responses")
+    resume = models.FileField(upload_to='resumes/')
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('student', 'job')  # Один студент может откликнуться только один раз

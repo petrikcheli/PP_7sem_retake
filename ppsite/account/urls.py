@@ -20,10 +20,21 @@ urlpatterns = [
     # path('password-reset/<uidb64>/<token>/',auth_views.PasswordResetConfirmView.as_view(),name='password_reset_confirm'),
     # path('password-reset/complete/',auth_views.PasswordResetCompleteView.as_view(),name='password_reset_complete'),
 
-    path('', views.dashboard, name='dashboard'),
+    #path('', views.dashboard, name='dashboard'),
+    path('', views.job_list, name='job_list'),
     path('register/', views.register, name='register'),
 
     path('create/', views.create_job, name='create_job'),
     path('jobs/', views.job_list, name='job_list'),
+    path('search/', views.post_search, name='post_search'),
+    path('my_jobs/', views.my_jobs, name='my_jobs'),
+
+    path('my_jobs/', views.my_jobs, name='my_jobs'),
+    path('job/<int:job_id>/edit/', views.edit_job, name='edit_job'),
+    path('job/<int:job_id>/delete/', views.delete_job, name='delete_job'),
+    path('job/<int:job_id>/apply/', views.apply_for_job, name='apply_for_job'),
+    path('employer/responses/', views.employer_responses, name='employer_responses'),
+    path('responses/', views.student_responses, name='student_responses'),
+    path('response/<int:response_id>/update/', views.update_response_status, name='update_response_status'),
 
 ]

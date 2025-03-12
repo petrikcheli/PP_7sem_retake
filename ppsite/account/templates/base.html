@@ -11,14 +11,18 @@
         {% if request.user.is_authenticated %}
             <ul class="menu">
                     <li {% if section == "dashboard" %}class="selected"{% endif %}>
-                        <a href="{% url "dashboard" %}">My dashboard</a>
+                        <a href="{% url "job_list" %}">Все вакансии</a>
                     </li>
-                    <li {% if section == "images" %}class="selected"{% endif %}>
-                        <a href="#">Images</a>
-                    </li>
-                    <li {% if section == "people" %}class="selected"{% endif %}>
-                        <a href="#">People</a>
-                    </li>
+                    {% if user.is_authenticated and user.profile.role == "employer" %}
+                        <li {% if section == "people" %}class="selected"{% endif %}>
+                            <a href="{% url 'employer_responses' %}">Отклики</a>
+                        </li>
+                    {% endif %}  
+                    {% if user.is_authenticated and user.profile.role == "employer" %}
+                        <li {% if section == "people" %}class="selected"{% endif %}>
+                            <a href="{% url 'my_jobs' %}">Мои вакансии</a>
+                        </li>
+                    {% endif %}    
                     {% if user.is_authenticated and user.profile.role == "employer" %}
                         <li{% if section == "create vacancies" %}class="selected"{% endif %}>
                              <a href="{% url 'create_job' %}">Создать вакансию</a>
